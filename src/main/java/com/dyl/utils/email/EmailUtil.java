@@ -1,4 +1,4 @@
-package com.dyl.utils;
+package com.dyl.utils.email;
 
 import com.dyl.entities.email.MailForm;
 
