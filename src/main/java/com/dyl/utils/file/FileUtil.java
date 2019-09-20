@@ -1,8 +1,6 @@
 package com.dyl.utils.file;
 
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
+import com.dyl.utils.http.HttpUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -24,18 +22,12 @@ public class FileUtil extends File {
 
     private static String location;
 
-    private static String img_base_path;
-
-    private static String USER_DIR = "user.dir";
-
     public static String PATH_SEPARATOR = "/";
 
     public static String FILE_TYPE_SEPARATOR = ".";
 
 
     private static String TMP_FILE_PATH = "data" + PATH_SEPARATOR + "tmp";
-    private static String KEYWORD_TMP = "tmp";
-    private static String KEYWORD_MD5 = "MD5";
 
 
     static {
@@ -57,7 +49,7 @@ public class FileUtil extends File {
     /**
      * 获取文件存储目录
      *
-     * @return
+     * @return -
      */
     public static String getBasePath() {
         if (StringUtils.isBlank(location)) {
@@ -69,21 +61,22 @@ public class FileUtil extends File {
     /**
      * 设置文件存储目录
      *
-     * @return
+     * @return -
      */
     private static String getProperty() {
+        String USER_DIR = "user.dir";
         return System.getProperty(USER_DIR) + PATH_SEPARATOR + TMP_FILE_PATH;
     }
 
     /**
      * 将文件下载到本地
      *
-     * @param url
+     * @param url      -
      * @param filename 文件原名称
      * @return 10002-文件网络地址异常,10003-文件创建失败
      */
     public static File loadNetFileToLocal(String url, String filename) throws IOException {
-        assert (url.isEmpty() || !verifyUrlNet(url));
+        assert (url.isEmpty() || !HttpUtil.verifyUrlNet(url));
         File source = File.createTempFile(getFileSerialNum(), filename, new File(FileUtil.getBasePath()));
         try (InputStream inputStream = new URL(url).openStream();
              OutputStream outputStream = new FileOutputStream(source);) {
@@ -100,17 +93,18 @@ public class FileUtil extends File {
 
     public static synchronized String getFileSerialNum() {
         file_count++;
+        String KEYWORD_TMP = "tmp";
         return KEYWORD_TMP + "(" + file_count + ")";
     }
 
     /**
      * 从输入流中获取字节数组
      *
-     * @param inputStream
-     * @return
-     * @throws IOException
+     * @param inputStream -
+     * @return -
+     * @throws IOException -
      */
-    public static byte[] readInputStream(InputStream inputStream) throws IOException {
+    private static byte[] readInputStream(InputStream inputStream) throws IOException {
         byte[] buffer = new byte[1024];
         int len = 0;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -125,9 +119,9 @@ public class FileUtil extends File {
      * 验证文件是否创建成功/存在
      *
      * @param source 文件地址(包括文件名+格式)
-     * @return
+     * @return -
      */
-    public static Boolean verifyFileExists(File source) {
+    private static Boolean verifyFileExists(File source) {
         boolean flag = true;
         if (!source.exists() || source.isDirectory()) {
             flag = false;
@@ -135,39 +129,20 @@ public class FileUtil extends File {
         return flag;
     }
 
-    /**
-     * 验证地址是否正确
-     *
-     * @param url
-     * @return true地址可用, false地址异常
-     * @throws IOException
-     */
-    public static Boolean verifyUrlNet(String url) throws IOException {
-        Response execute = null;
-        try {
-            OkHttpClient client = new OkHttpClient();
-            Request okRequest = new Request.Builder().url(url).build();
-            execute = client.newCall(okRequest).execute();
-            return execute.isSuccessful();
-        } finally {
-            if (execute != null) {
-                execute.body().close();
-            }
-        }
-    }
 
     /**
      * 获取文件md5
      *
-     * @param file
-     * @return
+     * @param file -
+     * @return -
      */
     public static String getMd5(File file) throws IOException, NoSuchAlgorithmException {
         assert !file.isFile();
 
-        byte buffer[] = new byte[1024];
+        byte[] buffer = new byte[1024];
         int len;
         try (FileInputStream in = new FileInputStream(file);) {
+            String KEYWORD_MD5 = "MD5";
             MessageDigest digest = MessageDigest.getInstance(KEYWORD_MD5);
             while ((len = in.read(buffer, 0, 1024)) != -1) {
                 digest.update(buffer, 0, len);
