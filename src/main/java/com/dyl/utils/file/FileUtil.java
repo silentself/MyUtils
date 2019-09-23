@@ -128,29 +128,4 @@ public class FileUtil extends File {
         }
         return flag;
     }
-
-
-    /**
-     * 获取文件md5
-     *
-     * @param file -
-     * @return -
-     */
-    public static String getMd5(File file) throws IOException, NoSuchAlgorithmException {
-        assert !file.isFile();
-
-        byte[] buffer = new byte[1024];
-        int len;
-        try (FileInputStream in = new FileInputStream(file);) {
-            String KEYWORD_MD5 = "MD5";
-            MessageDigest digest = MessageDigest.getInstance(KEYWORD_MD5);
-            while ((len = in.read(buffer, 0, 1024)) != -1) {
-                digest.update(buffer, 0, len);
-            }
-            BigInteger bigInt = new BigInteger(1, digest.digest());
-            return bigInt.toString(16);
-        }
-    }
-
-
 }

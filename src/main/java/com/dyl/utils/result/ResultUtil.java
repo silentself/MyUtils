@@ -9,7 +9,7 @@ import com.dyl.entities.result.VarysResult;
  * @author: tomcat
  * @date: 2018年11月1日下午1:31:58
  */
-public class ResultUtils {
+public class ResultUtil {
 
     /*
      * **************************************************************************

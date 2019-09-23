@@ -1,6 +1,7 @@
 package com.dyl.utils.media_source;
 
 import com.dyl.utils.file.FileUtil;
+import com.dyl.utils.md5.MD5Util;
 import org.bytedeco.javacpp.avcodec;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FFmpegFrameRecorder;
@@ -36,7 +37,7 @@ public class MsUtils {
     public static String convertToMp4(File file) throws IOException, NoSuchAlgorithmException {
         FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(file.getAbsolutePath());
         frameGrabber.start();
-        String absolutePath = file.getParentFile() + FileUtil.PATH_SEPARATOR + FileUtil.getMd5(file) + FileUtil.FILE_TYPE_SEPARATOR + TRANSCODED_FORMAT;
+        String absolutePath = file.getParentFile() + FileUtil.PATH_SEPARATOR + MD5Util.getFileMd5(file) + FileUtil.FILE_TYPE_SEPARATOR + TRANSCODED_FORMAT;
         FFmpegFrameRecorder recorder = new FFmpegFrameRecorder(absolutePath, frameGrabber.getImageWidth(), frameGrabber.getImageHeight(), frameGrabber.getAudioChannels());
         recorder.setVideoCodec(avcodec.AV_CODEC_ID_H264); //avcodec.AV_CODEC_ID_H264 //AV_CODEC_ID_MPEG4
         recorder.setFormat(TRANSCODED_FORMAT);
