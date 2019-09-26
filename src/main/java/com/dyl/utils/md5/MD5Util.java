@@ -75,7 +75,7 @@ public class MD5Util {
             while ((len = in.read(buffer, 0, 1024)) != -1) {
                 digest.update(buffer, 0, len);
             }
-            String str = new BigInteger(1, digest.digest()).toString();
+            String str = new BigInteger(1, digest.digest()).toString(16);
             return fillMD5(str);
         }
     }
